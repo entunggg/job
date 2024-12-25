@@ -93,3 +93,16 @@ if st.button("推薦職缺"):
         st.subheader(f"推薦結果 ({num_jobs_to_recommend} 個職缺)")
         for _, row in recommended_jobs.iterrows():
             st.write(f"**{row['職位名稱']}** - {row['公司名稱']} ({row['地點']})")
+
+# Step 8: Reset Button for Score and Selected Keywords
+def reset_progress():
+    """Reset the score and selected keywords."""
+    st.session_state.score = 0
+    st.session_state.selected_keywords = []
+    with open("score.pkl", "wb") as f:
+        pickle.dump(st.session_state.score, f)  # Reset score in the file
+
+# Add a button to reset the score and keywords
+if st.button("重製積分與選擇"):
+    reset_progress()
+    st.write("積分與選擇已重製！")
