@@ -103,6 +103,6 @@ def reset_progress():
         pickle.dump(st.session_state.score, f)  # Reset score in the file
 
 # Add a button to reset the score and keywords
-if st.button("重製積分與選擇"):
+if st.button("重置積分與選擇"):
     reset_progress()
-    st.write("積分與選擇已重製！")
+    st.write("積分與選擇已重置，請刷新網頁！")
