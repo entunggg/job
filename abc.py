@@ -4,6 +4,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import random
 import re
+import pickle
+import os
 
 # Step 1: Load Job Data
 file_url = "https://raw.githubusercontent.com/entunggg/job/f53f0535bc618fe1ded19eab93d3b9ab4f50d386/Job_List.csv"
@@ -32,7 +34,12 @@ shuffled_keywords = st.session_state.shuffled_keywords
 
 # Step 5: Initialize Score in session_state (use session_state to persist score)
 if "score" not in st.session_state:
-    st.session_state.score = 0
+    # Try loading the score from a file
+    if os.path.exists("score.pkl"):
+        with open("score.pkl", "rb") as f:
+            st.session_state.score = pickle.load(f)
+    else:
+        st.session_state.score = 0  # Default to 0 if no previous score
 
 # Step 6: App UI
 st.title("職缺推薦系統")
@@ -50,6 +57,10 @@ def toggle_keyword(keyword):
     else:
         st.session_state.selected_keywords.append(keyword)
         st.session_state.score += 1  # Increase score if keyword is selected
+
+    # Save score to a file
+    with open("score.pkl", "wb") as f:
+        pickle.dump(st.session_state.score, f)
 
 # Display keywords as buttons
 cols = st.columns(5)  # Adjust the number of columns to control layout
