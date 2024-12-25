@@ -30,12 +30,9 @@ if "shuffled_keywords" not in st.session_state:
 
 shuffled_keywords = st.session_state.shuffled_keywords
 
-# Step 5: Initialize Score in session_state (use text input to simulate persistent score)
+# Step 5: Initialize Score in session_state (use session_state to persist score)
 if "score" not in st.session_state:
     st.session_state.score = 0
-
-# Use text input to retain score even after page refresh
-score_input = st.text_input("當前積分：", value=str(st.session_state.score), key="score_input", max_chars=5)
 
 # Step 6: App UI
 st.title("職缺推薦系統")
@@ -46,13 +43,13 @@ if "selected_keywords" not in st.session_state:
     st.session_state.selected_keywords = []
 
 def toggle_keyword(keyword):
-    """Toggle the selection state of a keyword."""
+    """Toggle the selection state of a keyword and update score."""
     if keyword in st.session_state.selected_keywords:
         st.session_state.selected_keywords.remove(keyword)
+        st.session_state.score -= 1  # Decrease score if keyword is deselected
     else:
         st.session_state.selected_keywords.append(keyword)
-        # Increase the score when a keyword is selected
-        st.session_state.score += 1
+        st.session_state.score += 1  # Increase score if keyword is selected
 
 # Display keywords as buttons
 cols = st.columns(5)  # Adjust the number of columns to control layout
