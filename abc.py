@@ -30,9 +30,12 @@ if "shuffled_keywords" not in st.session_state:
 
 shuffled_keywords = st.session_state.shuffled_keywords
 
-# Step 5: Initialize Score in session_state
+# Step 5: Initialize Score in session_state (use text input to simulate persistent score)
 if "score" not in st.session_state:
     st.session_state.score = 0
+
+# Use text input to retain score even after page refresh
+score_input = st.text_input("當前積分：", value=str(st.session_state.score), key="score_input", max_chars=5)
 
 # Step 6: App UI
 st.title("職缺推薦系統")
@@ -82,4 +85,3 @@ if st.button("推薦職缺"):
         st.subheader(f"推薦結果 ({num_jobs_to_recommend} 個職缺)")
         for _, row in recommended_jobs.iterrows():
             st.write(f"**{row['職位名稱']}** - {row['公司名稱']} ({row['地點']})")
-
