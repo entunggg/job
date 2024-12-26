@@ -133,7 +133,7 @@ if st.button("提交回饋"):
         st.warning("請輸入回饋內容後再提交！")
 
 # 添加復選框選項來控制是否顯示評論
-show_feedback = st.checkbox("顯示所有用戶回饋")
+show_feedback = st.checkbox("顯示其他用戶回饋")
 
 # 如果用戶選擇顯示評論，讀取並顯示評論
 if show_feedback:
@@ -142,7 +142,7 @@ if show_feedback:
             with open(feedback_file, "r", encoding="utf-8") as f:
                 feedback_list = f.readlines()
 
-            st.markdown("<h3 style='text-align: center;'>所有用戶回饋</h3>", unsafe_allow_html=True)
+            st.markdown("<h3 style='text-align: center;'>其他用戶回饋</h3>", unsafe_allow_html=True)
 
             if feedback_list:
                 for i, feedback in enumerate(feedback_list, 1):
