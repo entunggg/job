@@ -131,6 +131,6 @@ if st.button("提交回饋"):
         with open(feedback_file, "a", encoding="utf-8") as f:
             f.write(f"{feedback_text}\n")
 
-        st.success("感謝您的回饋！已保存到桌面。")
+        st.success("感謝您的回饋！")
     else:
         st.warning("請輸入回饋內容後再提交！")
