@@ -32,7 +32,7 @@ if "shuffled_keywords" not in st.session_state:
 
 shuffled_keywords = st.session_state.shuffled_keywords
 
-# Step 5: Initialize Score in session_state (use session_state to persist score)
+# Step 5: Initialize Score and Operation Log in session_state
 if "score" not in st.session_state:
     # Try loading the score from a file
     if os.path.exists("score.pkl"):
@@ -40,6 +40,9 @@ if "score" not in st.session_state:
             st.session_state.score = pickle.load(f)
     else:
         st.session_state.score = 0  # Default to 0 if no previous score
+
+if "operation_log" not in st.session_state:
+    st.session_state.operation_log = []
 
 # Step 6: App UI
 st.markdown("<h1 style='text-align: center;'>職缺推薦系統</h1>", unsafe_allow_html=True)
@@ -54,13 +57,16 @@ def toggle_keyword(keyword):
     if keyword in st.session_state.selected_keywords:
         st.session_state.selected_keywords.remove(keyword)
         st.session_state.score -= 1  # Decrease score if keyword is deselected
+        operation = f"取消選擇關鍵字: {keyword}"
     else:
         st.session_state.selected_keywords.append(keyword)
         st.session_state.score += 1  # Increase score if keyword is selected
-
-    # Save score to a file
+        operation = f"選擇關鍵字: {keyword}"
+    
+    # Log the operation
+    st.session_state.operation_log.append(operation)
     with open("score.pkl", "wb") as f:
-        pickle.dump(st.session_state.score, f)
+        pickle.dump(st.session_state.score, f)  # Save score in the file
 
 # Display keywords as buttons
 cols = st.columns(5)  # Adjust the number of columns to control layout
@@ -119,9 +125,10 @@ if st.button("推薦職缺"):
 
 # Step 8: Reset Button for Score and Selected Keywords
 def reset_progress():
-    """Reset the score and selected keywords."""
+    """Reset the score, selected keywords, and operation log."""
     st.session_state.score = 0
     st.session_state.selected_keywords = []
+    st.session_state.operation_log = []
     with open("score.pkl", "wb") as f:
         pickle.dump(st.session_state.score, f)  # Reset score in the file
 
