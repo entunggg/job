@@ -78,8 +78,13 @@ if st.button("推薦職缺"):
     if not st.session_state.selected_keywords:
         st.warning("請至少選擇一個關鍵字！")
     else:
-        # Recommend jobs based on the user's score
-        num_jobs_to_recommend = 1 if st.session_state.score < 5 else 3
+        # Enhanced reward mechanism based on score
+        if st.session_state.score < 5:
+            num_jobs_to_recommend = 1
+        elif st.session_state.score < 10:
+            num_jobs_to_recommend = 3
+        else:
+            num_jobs_to_recommend = 5
 
         # Calculate Similarity
         user_vector = vectorizer.transform([' '.join(st.session_state.selected_keywords)])
@@ -93,6 +98,8 @@ if st.button("推薦職缺"):
         st.subheader(f"推薦結果 ({num_jobs_to_recommend} 個職缺)")
         for _, row in recommended_jobs.iterrows():
             st.write(f"**{row['職位名稱']}** - {row['公司名稱']} ({row['地點']})")
+            st.write(f"關鍵技能需求：{row['技能需求']}")
+            st.write("---")
 
 # Step 8: Reset Button for Score and Selected Keywords
 def reset_progress():
@@ -102,7 +109,10 @@ def reset_progress():
     with open("score.pkl", "wb") as f:
         pickle.dump(st.session_state.score, f)  # Reset score in the file
 
-# Add a button to reset the score and keywords
-if st.button("重置積分與選擇"):
+# Add a button to reset the score and keywords, styled in three lines
+st.write("\n")  # Add empty lines for spacing
+st.write("\n")
+if st.button("重置"):
     reset_progress()
-    st.write("積分與選擇已重置，請刷新網頁！")
+    st.success("積分與選擇已重置！請刷新網頁！")
+st.write("\n")
