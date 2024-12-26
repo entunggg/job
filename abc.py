@@ -43,7 +43,6 @@ if "score" not in st.session_state:
 
 # Step 6: App UI
 st.markdown("<h1 style='text-align: center;'>職缺推薦系統</h1>", unsafe_allow_html=True)
-st.write("")
 st.write("請點擊您感興趣的關鍵字！")
 
 # Create a dictionary in session_state to track selected keywords
@@ -72,7 +71,6 @@ for idx, keyword in enumerate(shuffled_keywords):
 
 # Show selected keywords
 st.write("已選擇的關鍵字：", ", ".join(st.session_state.selected_keywords))
-st.write("")
 st.write(f"當前積分：{st.session_state.score}")
 
 # Step 7: Recommend Jobs based on score
@@ -111,10 +109,28 @@ def reset_progress():
     with open("score.pkl", "wb") as f:
         pickle.dump(st.session_state.score, f)  # Reset score in the file
 
-# Add a button to reset the score and keywords, styled in three lines
-st.write("\n")  # Add empty lines for spacing
-st.write("\n")
 if st.button("重置"):
     reset_progress()
     st.success("積分與選擇已重置！請刷新網頁！")
-st.write("\n")
+
+# Step 9: User Feedback Form
+st.subheader("用戶回饋")
+feedback_text = st.text_area("請輸入您的建議或回饋：")
+if st.button("提交回饋"):
+    if feedback_text.strip():
+        # 確定桌面路徑（根據你的桌面路徑）
+        desktop_path = r"C:\Users\劉恩彤\OneDrive\桌面"
+        feedback_file = os.path.join(desktop_path, "user_feedback.csv")
+
+        # 如果文件不存在，創建文件並寫入表頭
+        if not os.path.exists(feedback_file):
+            with open(feedback_file, "w", encoding="utf-8") as f:
+                f.write("回饋內容\n")
+
+        # 將回饋內容追加到文件
+        with open(feedback_file, "a", encoding="utf-8") as f:
+            f.write(f"{feedback_text}\n")
+
+        st.success("感謝您的回饋！已保存到桌面。")
+    else:
+        st.warning("請輸入回饋內容後再提交！")
