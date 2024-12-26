@@ -114,22 +114,42 @@ if st.button("重置"):
     st.success("積分與選擇已重置！請刷新網頁！")
 
 # Step 9: User Feedback Form
-# 用戶回饋儲存路徑（桌面）
-feedback_file = r"C:\Users\劉恩彤\OneDrive\桌面\feedback.txt"
 
 # 顯示用戶回饋輸入區域
 st.markdown("<h2 style='text-align: center;'>用戶回饋</h2>", unsafe_allow_html=True)
 
 feedback_text = st.text_area("請輸入您的建議或回饋：")
 
+# 提交回饋按鈕
 if st.button("提交回饋"):
-    if feedback_text.strip():  # 確保有回饋內容
+    if feedback_text.strip():
         try:
-            # 將回饋內容追加到 .txt 檔案中，每條回饋獨占一行
             with open(feedback_file, "a", encoding="utf-8") as f:
                 f.write(feedback_text + "\n")
             st.success("感謝您的回饋！")
         except Exception as e:
-            st.error(f"回饋儲存失敗: {e}")
+            st.error(f"處理回饋時發生錯誤: {str(e)}")
     else:
         st.warning("請輸入回饋內容後再提交！")
+
+# 添加復選框選項來控制是否顯示評論
+show_feedback = st.checkbox("顯示所有用戶回饋")
+
+# 如果用戶選擇顯示評論，讀取並顯示評論
+if show_feedback:
+    try:
+        if os.path.exists(feedback_file):
+            with open(feedback_file, "r", encoding="utf-8") as f:
+                feedback_list = f.readlines()
+
+            st.markdown("<h3 style='text-align: center;'>所有用戶回饋</h3>", unsafe_allow_html=True)
+
+            if feedback_list:
+                for i, feedback in enumerate(feedback_list, 1):
+                    st.write(f"{i}. {feedback.strip()}")
+            else:
+                st.info("目前沒有用戶回饋。")
+        else:
+            st.info("目前沒有回饋檔案。")
+    except Exception as e:
+        st.error(f"讀取回饋時發生錯誤: {str(e)}")
