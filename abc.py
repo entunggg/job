@@ -130,21 +130,14 @@ if st.button("提交回饋"):
                 feedback_df = pd.read_csv(feedback_file, encoding="utf-8", errors="ignore")
                 new_data = pd.DataFrame({"回饋內容": [feedback_text]})
                 feedback_df = pd.concat([feedback_df, new_data], ignore_index=True)
-                
-                # 儲存更新並檢查是否成功
                 feedback_df.to_csv(feedback_file, index=False, encoding="utf-8")
                 st.success("感謝您的回饋！")
-                st.write("目前檔案內容如下：")
-                st.write(feedback_df)  # 顯示檔案的最新內容，檢查是否已更新
             else:
                 # 如果檔案不存在，創建新的檔案並寫入回饋
                 feedback_df = pd.DataFrame({"回饋內容": [feedback_text]})
                 feedback_df.to_csv(feedback_file, index=False, encoding="utf-8")
                 st.success("感謝您的回饋！")
-                st.write("目前檔案內容如下：")
-                st.write(feedback_df)  # 顯示檔案的最新內容，檢查是否已更新
         except Exception as e:
             st.error(f"處理回饋時發生錯誤: {str(e)}")
     else:
         st.warning("請輸入回饋內容後再提交！")
-
