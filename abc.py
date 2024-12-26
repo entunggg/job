@@ -42,7 +42,8 @@ if "score" not in st.session_state:
         st.session_state.score = 0  # Default to 0 if no previous score
 
 # Step 6: App UI
-st.title("職缺推薦系統")
+st.markdown("<h1 style='text-align: center;'>職缺推薦系統</h1>", unsafe_allow_html=True)
+st.write("")
 st.write("請點擊您感興趣的關鍵字！")
 
 # Create a dictionary in session_state to track selected keywords
