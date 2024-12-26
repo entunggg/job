@@ -114,7 +114,7 @@ if st.button("重置"):
     st.success("積分與選擇已重置！請刷新網頁！")
 
 # Step 9: User Feedback Form
-
+feedback_file = r"feedback.txt"
 # 顯示用戶回饋輸入區域
 st.markdown("<h2 style='text-align: center;'>用戶回饋</h2>", unsafe_allow_html=True)
 
