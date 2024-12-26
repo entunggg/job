@@ -41,7 +41,11 @@ if "score" not in st.session_state:
     else:
         st.session_state.score = 0  # Default to 0 if no previous score
 
-# Step 6: App UI
+# Step 6: Initialize Operation Log in session_state (new feature for tracking user actions)
+if "operation_log" not in st.session_state:
+    st.session_state.operation_log = []
+
+# Step 7: App UI
 st.markdown("<h1 style='text-align: center;'>職缺推薦系統</h1>", unsafe_allow_html=True)
 st.write("請點擊您感興趣的關鍵字！")
 
@@ -54,9 +58,13 @@ def toggle_keyword(keyword):
     if keyword in st.session_state.selected_keywords:
         st.session_state.selected_keywords.remove(keyword)
         st.session_state.score -= 1  # Decrease score if keyword is deselected
+        # Log the action
+        st.session_state.operation_log.append(f"關鍵字 {keyword} 被取消選擇")
     else:
         st.session_state.selected_keywords.append(keyword)
         st.session_state.score += 1  # Increase score if keyword is selected
+        # Log the action
+        st.session_state.operation_log.append(f"關鍵字 {keyword} 被選擇")
 
     # Save score to a file
     with open("score.pkl", "wb") as f:
@@ -73,7 +81,7 @@ for idx, keyword in enumerate(shuffled_keywords):
 st.write("已選擇的關鍵字：", ", ".join(st.session_state.selected_keywords))
 st.write(f"當前積分：{st.session_state.score}")
 
-# Step 7: Recommend Jobs based on score
+# Step 8: Recommend Jobs based on score
 if st.button("推薦職缺"):
     if not st.session_state.selected_keywords:
         st.warning("請至少選擇一個關鍵字！")
@@ -101,11 +109,12 @@ if st.button("推薦職缺"):
             st.write(f"關鍵技能需求：{row['技能需求']}")
             st.write("---")
 
-# Step 8: Reset Button for Score and Selected Keywords
+# Step 9: Reset Button for Score and Selected Keywords
 def reset_progress():
     """Reset the score and selected keywords."""
     st.session_state.score = 0
     st.session_state.selected_keywords = []
+    st.session_state.operation_log = []  # Reset operation log
     with open("score.pkl", "wb") as f:
         pickle.dump(st.session_state.score, f)  # Reset score in the file
 
@@ -113,7 +122,7 @@ if st.button("重置"):
     reset_progress()
     st.success("積分與選擇已重置！請刷新網頁！")
 
-# Step 9: User Feedback Form
+# Step 10: User Feedback Form
 feedback_file = r"feedback.txt"
 # 顯示用戶回饋輸入區域
 st.markdown("<h2 style='text-align: center;'>用戶回饋</h2>", unsafe_allow_html=True)
