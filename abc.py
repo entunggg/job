@@ -123,18 +123,21 @@ st.markdown("<h2 style='text-align: center;'>用戶回饋</h2>", unsafe_allow_ht
 feedback_text = st.text_area("請輸入您的建議或回饋：")
 if st.button("提交回饋"):
     if feedback_text.strip():  # 確保有回饋內容
-        # 檢查是否已經存在檔案
-        if os.path.exists(feedback_file):
-            # 如果檔案存在，將回饋內容追加到檔案
-            feedback_df = pd.read_csv(feedback_file, encoding="utf-8")
-            new_data = pd.DataFrame({"回饋內容": [feedback_text]})
-            feedback_df = pd.concat([feedback_df, new_data], ignore_index=True)
-            feedback_df.to_csv(feedback_file, index=False, encoding="utf-8")
-        else:
-            # 如果檔案不存在，創建新的檔案並寫入回饋
-            feedback_df = pd.DataFrame({"回饋內容": [feedback_text]})
-            feedback_df.to_csv(feedback_file, index=False, encoding="utf-8")
-
-        st.success("感謝您的回饋！")
+        try:
+            # 檢查是否已經存在檔案
+            if os.path.exists(feedback_file):
+                # 如果檔案存在，將回饋內容追加到檔案
+                feedback_df = pd.read_csv(feedback_file, encoding="utf-8", errors="ignore")
+                new_data = pd.DataFrame({"回饋內容": [feedback_text]})
+                feedback_df = pd.concat([feedback_df, new_data], ignore_index=True)
+                feedback_df.to_csv(feedback_file, index=False, encoding="utf-8")
+                st.success("感謝您的回饋！")
+            else:
+                # 如果檔案不存在，創建新的檔案並寫入回饋
+                feedback_df = pd.DataFrame({"回饋內容": [feedback_text]})
+                feedback_df.to_csv(feedback_file, index=False, encoding="utf-8")
+                st.success("感謝您的回饋！")
+        except Exception as e:
+            st.error(f"處理回饋時發生錯誤: {str(e)}")
     else:
         st.warning("請輸入回饋內容後再提交！")
