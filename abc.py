@@ -72,6 +72,7 @@ for idx, keyword in enumerate(shuffled_keywords):
 
 # Show selected keywords
 st.write("已選擇的關鍵字：", ", ".join(st.session_state.selected_keywords))
+st.write("")
 st.write(f"當前積分：{st.session_state.score}")
 
 # Step 7: Recommend Jobs based on score
