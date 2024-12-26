@@ -114,6 +114,7 @@ if st.button("重置"):
     st.success("積分與選擇已重置！請刷新網頁！")
 
 # Step 9: User Feedback Form
+# 用戶回饋儲存路徑（桌面）
 feedback_file = r"C:\Users\劉恩彤\OneDrive\桌面\feedback.txt"
 
 # 顯示用戶回饋輸入區域
@@ -121,23 +122,14 @@ st.markdown("<h2 style='text-align: center;'>用戶回饋</h2>", unsafe_allow_ht
 
 feedback_text = st.text_area("請輸入您的建議或回饋：")
 
-# 提交回饋按鈕邏輯
 if st.button("提交回饋"):
     if feedback_text.strip():  # 確保有回饋內容
         try:
-            # 打開文件，將回饋追加寫入
+            # 將回饋內容追加到 .txt 檔案中，每條回饋獨占一行
             with open(feedback_file, "a", encoding="utf-8") as f:
                 f.write(feedback_text + "\n")
             st.success("感謝您的回饋！")
         except Exception as e:
-            st.error(f"處理回饋時發生錯誤: {str(e)}")
+            st.error(f"回饋儲存失敗: {e}")
     else:
         st.warning("請輸入回饋內容後再提交！")
-
-# 提供檢視回饋功能
-if os.path.exists(feedback_file):
-    st.markdown("### 已提交的回饋：")
-    with open(feedback_file, "r", encoding="utf-8") as f:
-        feedbacks = f.readlines()
-    for feedback in feedbacks:
-        st.write("- " + feedback.strip())
