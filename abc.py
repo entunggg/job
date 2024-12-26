@@ -96,10 +96,26 @@ if st.button("推薦職缺"):
 
         # Display Results
         st.subheader(f"推薦結果 ({num_jobs_to_recommend} 個職缺)")
+        recommended_jobs_list = []
         for _, row in recommended_jobs.iterrows():
-            st.write(f"**{row['職位名稱']}** - {row['公司名稱']} ({row['地點']})")
-            st.write(f"關鍵技能需求：{row['技能需求']}")
-            st.write("---")
+            job_details = (
+                f"職位名稱: {row['職位名稱']}\n"
+                f"公司名稱: {row['公司名稱']}\n"
+                f"地點: {row['地點']}\n"
+                f"關鍵技能需求: {row['技能需求']}\n"
+                "--------------------------------------\n"
+            )
+            recommended_jobs_list.append(job_details)
+            st.write(job_details.replace("\n", "<br>"), unsafe_allow_html=True)
+
+        # Save results to a txt file
+        recommended_jobs_txt = "\n".join(recommended_jobs_list)
+        st.download_button(
+            label="下載推薦結果 (txt 格式)",
+            data=recommended_jobs_txt,
+            file_name="recommended_jobs.txt",
+            mime="text/plain"
+        )
 
 # Step 8: Reset Button for Score and Selected Keywords
 def reset_progress():
@@ -154,21 +170,10 @@ if show_feedback:
     except Exception as e:
         st.error(f"讀取回饋時發生錯誤: {str(e)}")
 
-# Step 10: Save Recommended Jobs as CSV for download
-def save_recommended_jobs_to_csv(recommended_jobs):
-    # Creating a temporary file for the user to download
-    csv_file_path = '/mnt/data/recommended_jobs.csv'
-    recommended_jobs.to_csv(csv_file_path, index=False, encoding='utf-8-sig')
-    return csv_file_path
-
-# After calculating the recommended jobs, save the file
-if st.button("下載推薦結果"):
-    if 'recommended_jobs' in locals():  # Ensure that recommended jobs exist
-        csv_file_path = save_recommended_jobs_to_csv(recommended_jobs)
-        st.success("推薦結果已生成，您可以下載！")
-        st.download_button(
-            label="下載推薦結果 CSV",
-            data=open(csv_file_path, "rb").read(),
-            file_name="recommended_jobs.csv",
-            mime="text/csv"
-        )
+st.markdown("<h2 style='text-align: center;'>操作記錄</h2>", unsafe_allow_html=True)
+if "operation_log" in st.session_state and st.session_state.operation_log:
+    st.write("以下是您的操作記錄：")
+    for log in st.session_state.operation_log:
+        st.write(log)
+else:
+    st.write("目前無操作記錄。")
