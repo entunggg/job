@@ -114,23 +114,30 @@ if st.button("重置"):
     st.success("積分與選擇已重置！請刷新網頁！")
 
 # Step 9: User Feedback Form
-st.subheader("用戶回饋")
+st.markdown("<h2 style='text-align: center;'>用戶回饋</h2>", unsafe_allow_html=True)
 feedback_text = st.text_area("請輸入您的建議或回饋：")
 if st.button("提交回饋"):
     if feedback_text.strip():
-        # 確定桌面路徑（根據你的桌面路徑）
         desktop_path = r"C:\Users\劉恩彤\OneDrive\桌面"
         feedback_file = os.path.join(desktop_path, "user_feedback.csv")
-
+        
+        # 確保桌面路徑存在
+        if not os.path.exists(desktop_path):
+            os.makedirs(desktop_path)
+        
+        print(f"Saving feedback to: {feedback_file}")  # 打印出文件路徑確認
+        
         # 如果文件不存在，創建文件並寫入表頭
         if not os.path.exists(feedback_file):
             with open(feedback_file, "w", encoding="utf-8") as f:
                 f.write("回饋內容\n")
 
         # 將回饋內容追加到文件
-        with open(feedback_file, "a", encoding="utf-8") as f:
-            f.write(f"{feedback_text}\n")
-
-        st.success("感謝您的回饋！")
+        try:
+            with open(feedback_file, "a", encoding="utf-8") as f:
+                f.write(f"{feedback_text}\n")
+            st.success("感謝您的回饋！")
+        except Exception as e:
+            st.error(f"保存回饋時出錯: {e}")
     else:
         st.warning("請輸入回饋內容後再提交！")
