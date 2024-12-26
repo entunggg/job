@@ -129,12 +129,11 @@ if st.button("提交回饋"):
             feedback_df = pd.read_csv(feedback_file, encoding="utf-8")
             new_data = pd.DataFrame({"回饋內容": [feedback_text]})
             feedback_df = pd.concat([feedback_df, new_data], ignore_index=True)
+            feedback_df.to_csv(feedback_file, index=False, encoding="utf-8")
         else:
-            # 如果檔案不存在，創建新的檔案
+            # 如果檔案不存在，創建新的檔案並寫入回饋
             feedback_df = pd.DataFrame({"回饋內容": [feedback_text]})
-
-        # 儲存回饋資料
-        feedback_df.to_csv(feedback_file, index=False, encoding="utf-8")
+            feedback_df.to_csv(feedback_file, index=False, encoding="utf-8")
 
         st.success("感謝您的回饋！")
     else:
