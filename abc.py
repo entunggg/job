@@ -1,7 +1,5 @@
 import streamlit as st
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 import random
 import re
 import pickle
@@ -78,63 +76,6 @@ for idx, keyword in enumerate(shuffled_keywords):
 # Show selected keywords
 st.write("已選擇的關鍵字：", ", ".join(st.session_state.selected_keywords))
 st.write(f"當前積分：{st.session_state.score}")
-
-# Step 7: Recommend Jobs based on score
-if st.button("推薦職缺"):
-    if not st.session_state.selected_keywords:
-        st.warning("請至少選擇一個關鍵字！")
-    else:
-        # Enhanced reward mechanism based on score
-        if st.session_state.score < 5:
-            num_jobs_to_recommend = 1
-        elif st.session_state.score < 10:
-            num_jobs_to_recommend = 3
-        else:
-            num_jobs_to_recommend = 5
-
-        # Calculate Similarity
-        user_vector = vectorizer.transform([' '.join(st.session_state.selected_keywords)])
-        similarity_scores = cosine_similarity(user_vector, tfidf_matrix).flatten()
-
-        # Recommend Jobs
-        job_data['相似度'] = similarity_scores
-        recommended_jobs = job_data.sort_values(by='相似度', ascending=False).head(num_jobs_to_recommend)
-
-        # Display Results
-        st.subheader(f"推薦結果 ({num_jobs_to_recommend} 個職缺)")
-        recommended_jobs_list = []
-        for _, row in recommended_jobs.iterrows():
-            job_details = (
-                f"職位名稱: {row['職位名稱']}\n"
-                f"公司名稱: {row['公司名稱']}\n"
-                f"地點: {row['地點']}\n"
-                f"關鍵技能需求: {row['技能需求']}\n"
-                "--------------------------------------\n"
-            )
-            recommended_jobs_list.append(job_details)
-            st.write(job_details.replace("\n", "<br>"), unsafe_allow_html=True)
-
-        # Save results to a txt file
-        recommended_jobs_txt = "\n".join(recommended_jobs_list)
-        st.download_button(
-            label="下載推薦結果 (txt 格式)",
-            data=recommended_jobs_txt,
-            file_name="recommended_jobs.txt",
-            mime="text/plain"
-        )
-
-# Step 8: Reset Button for Score and Selected Keywords
-def reset_progress():
-    """Reset the score, selected keywords, and operation log."""
-    st.session_state.score = 0
-    st.session_state.selected_keywords = []
-    st.session_state.operation_log = []
-    with open("score.pkl", "wb") as f:
-        pickle.dump(st.session_state.score, f)  # Reset score in the file
-
-if st.button("重置"):
-    reset_progress()
-    st.success("積分與選擇已重置！請刷新網頁！")
 
 # Step 9: User Feedback Form
 feedback_file = r"feedback.txt"
