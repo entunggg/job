@@ -153,3 +153,11 @@ if show_feedback:
             st.info("目前沒有回饋檔案。")
     except Exception as e:
         st.error(f"讀取回饋時發生錯誤: {str(e)}")
+
+st.markdown("<h2 style='text-align: center;'>操作記錄</h2>", unsafe_allow_html=True)
+if st.session_state.operation_log:
+    st.write("以下是您的操作記錄：")
+    for log in st.session_state.operation_log:
+        st.write(log)
+else:
+    st.write("目前無操作記錄。")
