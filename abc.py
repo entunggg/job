@@ -114,41 +114,31 @@ if st.button("重置"):
     st.success("積分與選擇已重置！請刷新網頁！")
 
 # Step 9: User Feedback Form
+# 用戶回饋儲存路徑（桌面）
+feedback_file = r"C:\Users\劉恩彤\OneDrive\桌面\feedback.csv"
 
-# 檢查是否有儲存用戶回饋的列表
-if "feedback_list" not in st.session_state:
-    st.session_state.feedback_list = []
-
-# 用戶回饋輸入區域
+# 顯示用戶回饋輸入區域
 st.markdown("<h2 style='text-align: center;'>用戶回饋</h2>", unsafe_allow_html=True)
 
-# 顯示用戶回饋區域
 feedback_text = st.text_area("請輸入您的建議或回饋：")
 
-# 定義回饋儲存路徑
-feedback_file = "C:\Users\劉恩彤\OneDrive\桌面\feedback.csv"
-
-# 儲存回饋到 CSV 檔案的函式
-def save_feedback(feedback):
-    try:
-        feedback_df = pd.DataFrame({"回饋內容": [feedback]})
-
-        # 如果檔案已存在，則將新回饋追加到檔案中
-        if os.path.exists(feedback_file):
-            feedback_df.to_csv(feedback_file, mode='a', header=False, index=False, encoding="utf-8")
-        else:
-            # 如果檔案不存在，創建新檔案並寫入回饋
-            feedback_df.to_csv(feedback_file, mode='w', header=True, index=False, encoding="utf-8")
-        st.success("感謝您的回饋！")
-    except Exception as e:
-        st.error(f"回饋儲存失敗: {e}")
-
-# 按鈕提交回饋
+# 提交回饋按鈕邏輯
 if st.button("提交回饋"):
-    if feedback_text.strip():
-        # 儲存回饋到 session_state 中
-        st.session_state.feedback_list.append(feedback_text)
-        save_feedback(feedback_text)  # 儲存回饋到檔案
+    if feedback_text.strip():  # 確保有回饋內容
+        try:
+            # 檢查檔案是否存在並操作
+            if os.path.exists(feedback_file):
+                feedback_df = pd.read_csv(feedback_file, encoding="utf-8")
+                new_data = pd.DataFrame({"回饋內容": [feedback_text]})
+                feedback_df = pd.concat([feedback_df, new_data], ignore_index=True)
+            else:
+                feedback_df = pd.DataFrame({"回饋內容": [feedback_text]})
+
+            # 寫入回饋檔案
+            feedback_df.to_csv(feedback_file, index=False, encoding="utf-8")
+            st.success("感謝您的回饋！")
+
+        except Exception as e:
+            st.error(f"處理回饋時發生錯誤: {str(e)}")
     else:
         st.warning("請輸入回饋內容後再提交！")
-
